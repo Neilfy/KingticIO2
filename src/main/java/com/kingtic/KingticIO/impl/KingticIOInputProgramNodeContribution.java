@@ -119,14 +119,17 @@ public class KingticIOInputProgramNodeContribution implements ProgramNodeContrib
 	
 	@Override
 	public void generateScript(ScriptWriter writer) {
-		int idx = model.get(SELECTED_IO, 0);
-		int value = model.get(RADIO_ON, true) ? 1 : 0;
-		KingticIO io = getInstallation().getIOInput(idx);
-		String cmd = io.addr + ",1";
-		
-		writer.appendLine("while ("+getInstallation().getXMLRPCVariable()+".ReadDiscreteInputs(\""+cmd+"\") != \""+value+"\"):");
-		writer.appendLine("  sync()");
-		writer.appendLine("end");
+		if(getInstallation().isConnected())
+		{
+			int idx = model.get(SELECTED_IO, 0);
+			int value = model.get(RADIO_ON, true) ? 1 : 0;
+			KingticIO io = getInstallation().getIOInput(idx);
+			String cmd = io.addr + ",1";
+			
+			writer.appendLine("while ("+getInstallation().getXMLRPCVariable()+".ReadDiscreteInputs(\""+cmd+"\") != \""+value+"\"):");
+			writer.appendLine("  sync()");
+			writer.appendLine("end");
+		}
 		
 		writer.writeChildren();
 	}

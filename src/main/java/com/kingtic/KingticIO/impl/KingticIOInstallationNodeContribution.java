@@ -87,6 +87,9 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	private final static String IMAGE_RED = "com/kingtic/KingticIO/impl/red.png";
 	private final static String IMAGE_GRAY = "com/kingtic/KingticIO/impl/gray.png";
 	
+	private final static int INDENTITY_ADDR = 2000;
+	private final static int INDENTITY_VALUE = 2000;
+	
 	private boolean isConnected = false;
 	private String IP = "";
 	private int DO = 0;
@@ -246,8 +249,24 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 						IP = IPText.getText();
 						if(!IP.isEmpty())
 						{
-							isConnected = xmlRpcDaemonInterface.ConnectTCP(IP);
-							tcpStatusLabel.setText("连接"+(isConnected?"成功":"失败"));
+							boolean ret = xmlRpcDaemonInterface.ConnectTCP(IP);
+							if(ret)
+							{
+								boolean isVaild = CheckIndentity();
+								if(isVaild)
+								{
+									tcpStatusLabel.setText("连接成功");
+									isConnected = true;
+								}else
+								{
+									tcpStatusLabel.setText("非法KingticIO");
+								}
+								
+							}else
+							{
+								tcpStatusLabel.setText("连接失败");
+							}
+							
 						}else
 						{
 							tcpStatusLabel.setText("IP地址不能为空！");
@@ -270,6 +289,27 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 			}
 			
 		}
+	}
+	
+	//
+	private boolean CheckIndentity()
+	{
+		boolean ret = false;
+		try {
+			String indentity = xmlRpcDaemonInterface.GetIO(INDENTITY_ADDR+",1");
+			Integer value = new Integer(indentity);
+			if(value==INDENTITY_VALUE)
+			{
+				ret = true;
+			}
+		} catch (XmlRpcException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnknownResponseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ret;
 	}
 	
 	@Input(id = "txtioName")
@@ -859,5 +899,10 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	public String getXMLRPCVariable() {return XMLRPC_VARIABLE;}
 	
 	public XmlRpcMyDaemonInterface getXmlRpcDaemonInterface() {return xmlRpcDaemonInterface; }
+	
+	public boolean isConnected()
+	{
+		return isConnected;
+	}
 
 }

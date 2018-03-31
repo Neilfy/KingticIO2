@@ -75,17 +75,21 @@ public class KingticIOProgramNodeContribution implements ProgramNodeContribution
 	@Input(id = "btnSend")
 	public void onSendClick(InputEvent event) {
 		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
-			int idx = OutputSelect.getSelectedIndex();
-			int value = radioOn.isSelected() ? 1 : 0;
-			KingticIO io = getInstallation().getIOOutput(idx);
-			String cmd = io.addr + "," + value;
-			try {
-				//getInstallation().getXmlRpcDaemonInterface().SendCommand(cmd);
-				getInstallation().getXmlRpcDaemonInterface().WriteSingleCoil(cmd);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
+			if(getInstallation().isConnected())
+			{
+				int idx = OutputSelect.getSelectedIndex();
+				int value = radioOn.isSelected() ? 1 : 0;
+				KingticIO io = getInstallation().getIOOutput(idx);
+				String cmd = io.addr + "," + value;
+				try {
+					//getInstallation().getXmlRpcDaemonInterface().SendCommand(cmd);
+					getInstallation().getXmlRpcDaemonInterface().WriteSingleCoil(cmd);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+			}
+			
 		}
 	}
 	
@@ -143,14 +147,18 @@ public class KingticIOProgramNodeContribution implements ProgramNodeContribution
 	
 	@Override
 	public void generateScript(ScriptWriter writer) {
-		int idx = model.get(SELECTED_IO, 0);
-		int value = model.get(RADIO_ON, true) ? 1 : 0;
-		KingticIO io = getInstallation().getIOOutput(idx);
-		String cmd = io.addr + "," + value;
+		if(getInstallation().isConnected())
+		{
+			int idx = model.get(SELECTED_IO, 0);
+			int value = model.get(RADIO_ON, true) ? 1 : 0;
+			KingticIO io = getInstallation().getIOOutput(idx);
+			String cmd = io.addr + "," + value;
+			
+			//writer.assign("ret", getInstallation().getXMLRPCVariable() + ".WriteSingleCoil(\"" + cmd + "\")");
+			writer.appendLine(getInstallation().getXMLRPCVariable() + ".WriteSingleCoil(\"" + cmd + "\")");
+			//writer.appendLine("popup(ret, ret, False, False, blocking=True)");
+		}
 		
-		//writer.assign("ret", getInstallation().getXMLRPCVariable() + ".WriteSingleCoil(\"" + cmd + "\")");
-		writer.appendLine(getInstallation().getXMLRPCVariable() + ".WriteSingleCoil(\"" + cmd + "\")");
-		//writer.appendLine("popup(ret, ret, False, False, blocking=True)");
 		writer.writeChildren();
 	}
 

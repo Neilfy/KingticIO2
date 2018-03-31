@@ -77,9 +77,10 @@ def WriteSingleCoil(value):
 		ret = modbusClient.WriteSingleCoil(int(vals[0]), int(vals[1]))
 	return ret
 
-#print connect_TCP("192.168.1.102")
+#print connect_TCP("192.168.1.37")
 #disconnect()
-#print get_IO("1,1")
+#print get_IO("2000,1")
+#print send_Command("2000,2000")
 #print ReadDiscreteInputs("1,1")
 #print ReadCoils("0,16")
 #print WriteSingleCoil("5,1")
