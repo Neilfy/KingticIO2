@@ -79,7 +79,9 @@ def WriteSingleCoil(value):
 
 #print connect_TCP("192.168.1.37")
 #disconnect()
-#print get_IO("2000,1")
+#while True:
+#	print get_IO("2000,1")
+#	time.sleep( 3)
 #print send_Command("2000,2000")
 #print ReadDiscreteInputs("1,1")
 #print ReadCoils("0,16")

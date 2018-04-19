@@ -6,10 +6,13 @@ import com.ur.urcap.api.domain.URCapAPI;
 import com.ur.urcap.api.domain.data.DataModel;
 
 import java.io.InputStream;
+import java.util.ResourceBundle;
 
 public class KingticIOInputProgramNodeService implements ProgramNodeService {
 
-	public KingticIOInputProgramNodeService() {
+	private ResourceBundle KingticStrings;
+	public KingticIOInputProgramNodeService(ResourceBundle KingticStrings) {
+		this.KingticStrings = KingticStrings;
 	}
 
 	@Override
@@ -19,7 +22,7 @@ public class KingticIOInputProgramNodeService implements ProgramNodeService {
 
 	@Override
 	public String getTitle() {
-		return "设置输入";
+		return KingticStrings.getString("PNodeS_In_Title");
 	}
 
 	@Override
@@ -40,6 +43,6 @@ public class KingticIOInputProgramNodeService implements ProgramNodeService {
 
 	@Override
 	public ProgramNodeContribution createNode(URCapAPI api, DataModel model) {
-		return new KingticIOInputProgramNodeContribution(api, model);
+		return new KingticIOInputProgramNodeContribution(api, model, KingticStrings);
 	}
 }

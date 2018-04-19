@@ -5,6 +5,7 @@ import com.ur.urcap.api.contribution.InstallationNodeService;
 import com.ur.urcap.api.domain.URCapAPI;
 
 import java.io.InputStream;
+import java.util.ResourceBundle;
 
 import com.ur.urcap.api.domain.data.DataModel;
 import com.kingtic.KingticIO.impl.MyDaemonDaemonService;
@@ -12,19 +13,21 @@ import com.kingtic.KingticIO.impl.MyDaemonDaemonService;
 public class KingticIOInstallationNodeService implements InstallationNodeService {
 
 	private final MyDaemonDaemonService daemonService;
-	public KingticIOInstallationNodeService(MyDaemonDaemonService daemonService) 
+	private ResourceBundle KingticStrings;
+	public KingticIOInstallationNodeService(MyDaemonDaemonService daemonService, ResourceBundle KingticStrings) 
 	{
 		this.daemonService = daemonService;
+		this.KingticStrings = KingticStrings;
 	}
 
 	@Override
 	public InstallationNodeContribution createInstallationNode(URCapAPI api, DataModel model) {
-		return new KingticIOInstallationNodeContribution(daemonService, model);
+		return new KingticIOInstallationNodeContribution(daemonService, KingticStrings, model);
 	}
 
 	@Override
 	public String getTitle() {
-		return "kingtic I/O Setup";
+		return KingticStrings.getString("INodeS_Title");
 	}
 
 	@Override

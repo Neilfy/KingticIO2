@@ -8,8 +8,8 @@
 				padding: 5px;
 			}
 			.iobtn {
-				width: 30px;
-				height: 30px;
+				width: 45px;
+				height: 45px;
 			}
 			.ioRadio{
 				width:25px;
@@ -31,10 +31,18 @@
 	</head>
 	<body>
 		<form>
-		<div><input id="tabIoSetting" class="tabbtn" type="button" /> <input id="tabIoMonitor" class="tabbtn" type="button" /></div>
-		<hr class="line_break">
+		<label id=IPTextLabel></label>:<input id="txtIP" style="width:150px;height:30px;" type="text" />
+		<input id="btnConnectTCP"  type="button" />
+		<label id="lblTcpStatus" style="width:180px;height:30px;"></label>
+		<label id="logo" style="padding-left: 5px;"/>
 		
-		<div style="padding-top:5px" id="divIoSetting">
+		<div style="display: block;">
+			<input type="button" value="" id="tabIoMonitor" style="display: inline-block; height: 21px; width: 100px; font-size: 14px; padding: 22px 0px 22px 0px""/>
+			<input type="button" value="" id="tabIoSetting" style="display: inline-block; height: 21px; width: 100px; font-size: 14px; padding: 22px 0px 22px 0px"/>			
+			<label id="hline1" style="padding-top: 19px; display: inline-block;"/>
+		</div>	
+		
+		<div  id="divIoSetting">
 			<div>
 				<div style="display:inline-block">
 					<div>
@@ -138,67 +146,62 @@
 				</div>
 			</div>
 			<br>
-			重命名:<input id="txtioName" style="width:200px;height:30px;" type="text" /> <input id="btnClean" style="width:100px;height:30px" type="button" />
+			<label id=renameLabel></label>:<input id="txtioName" style="width:200px;height:30px;" type="text" /> <input id="btnClean" style="width:100px;height:30px" type="button" />
 		</div>
 		
-		<div style="padding-top:5px" id="divIoMonitor">
-			IP地址:<input id="txtIP" style="width:200px;height:30px;" type="text" />
-			<input id="btnConnectTCP" style="width:100px;height:30px;" type="button" />
-			<label id="lblTcpStatus" style="width:100px;height:30px;"></label>
-			<div class="spacer">&nbsp;</div>
+		<div id="divIoMonitor">
 			
 			<div>
-				<div style="display:inline-block">
+				<div style="padding-left:20px">
+					<div><label id=inputLabel></label>:</div>
 					<div>
 						<div class="ioblock"><span>ki0</span><br/><input id="ki0" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ki1</span><br/><input id="ki1" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ki2</span><br/><input id="ki2" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ki3</span><br/><input id="ki3" class="iobtn" type="button" /></div>
-					</div>
-					<div>
 						<div class="ioblock"><span>ki4</span><br/><input id="ki4" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ki5</span><br/><input id="ki5" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ki6</span><br/><input id="ki6" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ki7</span><br/><input id="ki7" class="iobtn" type="button" /></div>
 					</div>
+					
 					<div>
 						<div class="ioblock"><span>ki8</span><br/><input id="ki8" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ki9</span><br/><input id="ki9" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ki10</span><br/><input id="ki10" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ki11</span><br/><input id="ki11" class="iobtn" type="button" /></div>
-					</div>
-					<div>
 						<div class="ioblock"><span>ki12</span><br/><input id="ki12" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ki13</span><br/><input id="ki13" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ki14</span><br/><input id="ki14" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ki15</span><br/><input id="ki15" class="iobtn" type="button" /></div>
 					</div>
+					
 				</div>
-				<div style="display:inline-block;padding-left:100px;">
+				<div style="padding-top:20px;"><label id="hline2"/></div>
+				<div style="padding-top:20px;padding-left:20px">
+				    <div><label id=outputLabel></label>:</div>
 					<div>
 						<div class="ioblock"><span>ko0</span><br/><input id="ko0" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ko1</span><br/><input id="ko1" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ko2</span><br/><input id="ko2" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ko3</span><br/><input id="ko3" class="iobtn" type="button" /></div>
-					</div>
-					<div>
 						<div class="ioblock"><span>ko4</span><br/><input id="ko4" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ko5</span><br/><input id="ko5" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ko6</span><br/><input id="ko6" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ko7</span><br/><input id="ko7" class="iobtn" type="button" /></div>
 					</div>
+					
 					<div>
 						<div class="ioblock"><span>ko8</span><br/><input id="ko8" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ko9</span><br/><input id="ko9" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ko10</span><br/><input id="ko10" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ko11</span><br/><input id="ko11" class="iobtn" type="button" /></div>
-					</div>
-					<div>
 						<div class="ioblock"><span>ko12</span><br/><input id="ko12" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ko13</span><br/><input id="ko13" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ko14</span><br/><input id="ko14" class="iobtn" type="button" /></div>
 						<div class="ioblock"><span>ko15</span><br/><input id="ko15" class="iobtn" type="button" /></div>
 					</div>
+					
 				</div>
 			</div>
 		</div>

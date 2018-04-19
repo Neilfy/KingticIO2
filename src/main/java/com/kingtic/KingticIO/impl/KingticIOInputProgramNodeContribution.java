@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
@@ -36,14 +37,30 @@ public class KingticIOInputProgramNodeContribution implements ProgramNodeContrib
 
 	private final DataModel model;
 	private final URCapAPI api;
+	
+	private ResourceBundle KingticStrings;
+	
+	private String DefaultTitle = "";
+	private String Wait = "";
+	private String On = "";
+	private String Off = "";
+	private String SetTitle = "";
 
-	public KingticIOInputProgramNodeContribution(URCapAPI api, DataModel model) {
+	public KingticIOInputProgramNodeContribution(URCapAPI api, DataModel model, ResourceBundle KingticStrings) {
 		this.api = api;
 		this.model = model;
+		this.KingticStrings = KingticStrings;
+		this.DefaultTitle = KingticStrings.getString("PNodeC_In_Title");
+		this.model.set("DefaultTitle", DefaultTitle);
+		Wait = KingticStrings.getString("Wait");
+		On = KingticStrings.getString("ON");
+		Off = KingticStrings.getString("OFF");
 	}
 
-	@Img(id="img")
-	private ImgComponent imgComponent;
+	@Label(id="logo")
+	private LabelComponent lblLogo;
+	@Label(id="labelFront")
+	private LabelComponent labelFront;
 	
 	@Select(id="selInput")
 	private SelectDropDownList InputSelect;
@@ -53,6 +70,7 @@ public class KingticIOInputProgramNodeContribution implements ProgramNodeContrib
 		if (event.getEvent() == ON_SELECT) {
 			int idx = InputSelect.getSelectedIndex();
 			model.set(SELECTED_IO, idx);
+			UpdateTitle();
 		}
 	}
 	
@@ -62,6 +80,7 @@ public class KingticIOInputProgramNodeContribution implements ProgramNodeContrib
 	private void selectRadioON(InputEvent event) {
 		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
 			model.set(RADIO_ON, radioOn.isSelected());
+			UpdateTitle();
 		}
 	}
 	
@@ -73,10 +92,17 @@ public class KingticIOInputProgramNodeContribution implements ProgramNodeContrib
 	public void openView() {
 		BufferedImage img = loadImage();
 		if (img != null) {
-			imgComponent.setImage(img);
+			lblLogo.setImage(img);
 		}
-		InputSelect.setItems(getInstallation().getIOInputItems());
+
+		labelFront.setText(KingticStrings.getString("Wait"));
+		ArrayList<Object> items = getInstallation().getIOInputItems();
+		items.add(0, "    ---");
+		InputSelect.setItems(items);
 		InputSelect.selectItemAtIndex(model.get(SELECTED_IO, 0));
+		
+		radioOn.setText(On);
+		radioOff.setText(Off);
 		
 		if(model.get(RADIO_ON, true))
 			radioOn.setSelected();
@@ -109,12 +135,12 @@ public class KingticIOInputProgramNodeContribution implements ProgramNodeContrib
 
 	@Override
 	public String getTitle() {
-		return "设置输入";
+		return this.model.get("DefaultTitle", DefaultTitle);//SetTitle.isEmpty() ? DefaultTitle : SetTitle;
 	}
 
 	@Override
 	public boolean isDefined() {
-		return true;
+		return getInstallation().isConnected() && InputSelect.getSelectedIndex()!=0;
 	}
 	
 	@Override
@@ -123,7 +149,7 @@ public class KingticIOInputProgramNodeContribution implements ProgramNodeContrib
 		{
 			int idx = model.get(SELECTED_IO, 0);
 			int value = model.get(RADIO_ON, true) ? 1 : 0;
-			KingticIO io = getInstallation().getIOInput(idx);
+			KingticIO io = getInstallation().getIOInput(idx-1);
 			String cmd = io.addr + ",1";
 			
 			writer.appendLine("while ("+getInstallation().getXMLRPCVariable()+".ReadDiscreteInputs(\""+cmd+"\") != \""+value+"\"):");
@@ -134,6 +160,16 @@ public class KingticIOInputProgramNodeContribution implements ProgramNodeContrib
 		writer.writeChildren();
 	}
 
+	private void UpdateTitle()
+	{
+		if(InputSelect.getSelectedIndex()>0)
+		{
+			SetTitle = Wait+" "
+					+InputSelect.getSelectedItem()
+					+(radioOn.isSelected()?("="+On):"="+Off);
+			this.model.set("DefaultTitle", SetTitle);
+		}
+	}
 
 	private KingticIOInstallationNodeContribution getInstallation() {
 		return api.getInstallationNode(KingticIOInstallationNodeContribution.class);

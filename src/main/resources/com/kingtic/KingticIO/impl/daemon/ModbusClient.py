@@ -48,6 +48,7 @@ class ModbusClient(object):
             self.tcpClientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self._ipAddress = params[0]
             self._port = params[1]
+            self.tcpClientSocket.settimeout(2)
             
             
     def Connect(self):
@@ -140,12 +141,16 @@ class ModbusClient(object):
             lengthLSB = 0x06;
             lengthMSB = 0x00;
             data = bytearray([transactionIdentifierMSB, transactionIdentifierLSB, protocolIdentifierMSB, protocolIdentifierLSB,lengthMSB,lengthLSB,self._unitIdentifier, functionCode, startingAddressMSB, startingAddressLSB,quatityMSB,quatityLSB] )
-            self.tcpClientSocket.send(data)
-            if (quantity % 8 != 0):
-                bytesToRead = 10+int(quantity/8)
-            else:
-                bytesToRead = 9+int(quantity/8)
-            data = self.tcpClientSocket.recv(bytesToRead)
+            try:
+                self.tcpClientSocket.send(data)
+                if (quantity % 8 != 0):
+                    bytesToRead = 10+int(quantity/8)
+                else:
+                    bytesToRead = 9+int(quantity/8)
+                data = self.tcpClientSocket.recv(bytesToRead)
+            except socket.error, e:
+                self.close()
+                return list()
             
             if ((data[1 + 6] == 0x82) & (data[2 + 6] == 0x01)):
                 raise Exceptions.FunctionCodeNotSupportedException("Function code not supported by master");
@@ -219,12 +224,16 @@ class ModbusClient(object):
             lengthLSB = 0x06;
             lengthMSB = 0x00;
             data = bytearray([transactionIdentifierMSB, transactionIdentifierLSB, protocolIdentifierMSB, protocolIdentifierLSB,lengthMSB,lengthLSB,self._unitIdentifier, functionCode, startingAddressMSB, startingAddressLSB,quatityMSB,quatityLSB] )
-            self.tcpClientSocket.send(data)
-            if (quantity % 8 != 0):
-                bytesToRead = 10+int(quantity/8)
-            else:
-                bytesToRead = 9+int(quantity/8)
-            data = self.tcpClientSocket.recv(bytesToRead)
+            try:
+                self.tcpClientSocket.send(data)
+                if (quantity % 8 != 0):
+                    bytesToRead = 10+int(quantity/8)
+                else:
+                    bytesToRead = 9+int(quantity/8)
+                data = self.tcpClientSocket.recv(bytesToRead)
+            except socket.error, e:
+                self.close()
+                return list()
             
             if ((data[1 + 6] == 0x82) & (data[2 + 6] == 0x01)):
                 raise Exceptions.FunctionCodeNotSupportedException("Function code not supported by master");
@@ -296,9 +305,13 @@ class ModbusClient(object):
             lengthLSB = 0x06;
             lengthMSB = 0x00;
             data = bytearray([transactionIdentifierMSB, transactionIdentifierLSB, protocolIdentifierMSB, protocolIdentifierLSB,lengthMSB,lengthLSB,self._unitIdentifier, functionCode, startingAddressMSB, startingAddressLSB,quatityMSB,quatityLSB] )
-            self.tcpClientSocket.send(data)
-            bytesToRead = 9+int(quantity*2)
-            data = self.tcpClientSocket.recv(bytesToRead)
+            try:
+                self.tcpClientSocket.send(data)
+                bytesToRead = 9+int(quantity*2)
+                data = self.tcpClientSocket.recv(bytesToRead)
+            except socket.error, e:
+                self.close()
+                return list()
             if ((data[1+6] == 0x83) & (data[2+6] == 0x01)):
                 raise Exceptions.FunctionCodeNotSupportedException("Function code not supported by master");
             if ((data[1+6] == 0x83) & (data[2+6] == 0x02)):
@@ -365,9 +378,13 @@ class ModbusClient(object):
             lengthLSB = 0x06;
             lengthMSB = 0x00;
             data = bytearray([transactionIdentifierMSB, transactionIdentifierLSB, protocolIdentifierMSB, protocolIdentifierLSB,lengthMSB,lengthLSB,self._unitIdentifier, functionCode, startingAddressMSB, startingAddressLSB,quatityMSB,quatityLSB] )
-            self.tcpClientSocket.send(data)
-            bytesToRead = 9+int(quantity*2)
-            data = self.tcpClientSocket.recv(bytesToRead)
+            try:
+                self.tcpClientSocket.send(data)
+                bytesToRead = 9+int(quantity*2)
+                data = self.tcpClientSocket.recv(bytesToRead)
+            except socket.error, e:
+                self.close()
+                return list()
             if ((data[1+6] == 0x84) & (data[2+6] == 0x01)):
                 raise Exceptions.FunctionCodeNotSupportedException("Function code not supported by master");
             if ((data[1+6] == 0x84) & (data[2+6] == 0x02)):
@@ -433,9 +450,13 @@ class ModbusClient(object):
             lengthLSB = 0x06;
             lengthMSB = 0x00;
             data = bytearray([transactionIdentifierMSB, transactionIdentifierLSB, protocolIdentifierMSB, protocolIdentifierLSB,lengthMSB,lengthLSB,self._unitIdentifier, functionCode, startingAddressMSB, startingAddressLSB,valueMSB,valueLSB] )
-            self.tcpClientSocket.send(data)
-            bytesToRead = 12
-            data = self.tcpClientSocket.recv(bytesToRead)
+            try:
+                self.tcpClientSocket.send(data)
+                bytesToRead = 12
+                data = self.tcpClientSocket.recv(bytesToRead)
+            except socket.error, e:
+                self.close()
+                return list()
             if ((data[1+6] == 0x85) & (data[2+6] == 0x01)):
                 raise Exceptions.FunctionCodeNotSupportedException("Function code not supported by master");
             if ((data[1+6] == 0x85) & (data[2+6] == 0x02)):
@@ -496,9 +517,13 @@ class ModbusClient(object):
             lengthLSB = 0x06;
             lengthMSB = 0x00;
             data = bytearray([transactionIdentifierMSB, transactionIdentifierLSB, protocolIdentifierMSB, protocolIdentifierLSB,lengthMSB,lengthLSB,self._unitIdentifier, functionCode, startingAddressMSB, startingAddressLSB,valueMSB,valueLSB] )
-            self.tcpClientSocket.send(data)
-            bytesToRead = 12
-            data = self.tcpClientSocket.recv(bytesToRead)
+            try:
+                self.tcpClientSocket.send(data)
+                bytesToRead = 12
+                data = self.tcpClientSocket.recv(bytesToRead)
+            except socket.error, e:
+                self.close()
+                return list()
             if ((data[1+6] == 0x86) & (data[2+6] == 0x01)):
                 raise Exceptions.FunctionCodeNotSupportedException("Function code not supported by master");
             if ((data[1+6] == 0x86) & (data[2+6] == 0x02)):

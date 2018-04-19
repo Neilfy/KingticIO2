@@ -21,7 +21,8 @@ public class XmlRpcMyDaemonInterface {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-		config.setConnectionTimeout(1000); //1s
+		//config.setConnectionTimeout(1000); //1s
+		//config.setReplyTimeout(1000);
 		client = new XmlRpcClient();
 		client.setConfig(config);
 	}

@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
@@ -82,6 +84,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	};
 	
 
+	private ResourceBundle KingticStrings;
 	private static final String ENABLED_KEY = "enabled";
 	private static final String XMLRPC_VARIABLE = "my_daemon";
 	private final static String IMAGE_RED = "com/kingtic/KingticIO/impl/red.png";
@@ -89,6 +92,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	
 	private final static int INDENTITY_ADDR = 2000;
 	private final static int INDENTITY_VALUE = 2000;
+	private final static String DEFAULT_IP = "192.168.1.37";
 	
 	private boolean isConnected = false;
 	private String IP = "";
@@ -106,14 +110,36 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	private XmlRpcMyDaemonInterface xmlRpcDaemonInterface;
 	private Timer uiTimer;
 	
+	@Label(id="logo")
+	private LabelComponent lblLogo;
+	
+	private BufferedImage img_logo;
 	private BufferedImage img_red, img_gray;
+	private BufferedImage img_tabMonitor, img_tabSetting, img_tabMonitor_sel
+	, img_tabSetting_sel, img_hline_tab, img_hline,
+	img_success, img_failed, img_disconnected, img_invalid;
 
-	public KingticIOInstallationNodeContribution(MyDaemonDaemonService daemonService, DataModel model) {
+	public KingticIOInstallationNodeContribution(MyDaemonDaemonService daemonService, ResourceBundle KingticStrings, DataModel model) {
 		this.daemonService = daemonService;
 		this.model = model;
+		//this.KingticStrings = ResourceBundle.getBundle("KingticIO", Locale.getDefault());
+		this.KingticStrings = KingticStrings;
 		//
+		img_logo = loadImage("com/kingtic/KingticIO/impl/logo.png");
 		img_red = loadImage(IMAGE_RED);
 		img_gray = loadImage(IMAGE_GRAY);
+		String suffix = KingticStrings.getString("suffix");
+		img_tabMonitor = loadImage("com/kingtic/KingticIO/impl/IOmonitor"+suffix+".png");
+		img_tabMonitor_sel = loadImage("com/kingtic/KingticIO/impl/IOmonitor-sel"+suffix+".png");
+		img_tabSetting = loadImage("com/kingtic/KingticIO/impl/IOsetting"+suffix+".png");
+		img_tabSetting_sel = loadImage("com/kingtic/KingticIO/impl/IOsetting-sel"+suffix+".png");
+		img_hline_tab = loadImage("com/kingtic/KingticIO/impl/hline_tab.png");
+		img_hline = loadImage("com/kingtic/KingticIO/impl/hline.png");
+		
+		img_success = loadImage("com/kingtic/KingticIO/impl/success"+suffix+".png");
+		img_disconnected = loadImage("com/kingtic/KingticIO/impl/disconnected"+suffix+".png");
+		img_invalid = loadImage("com/kingtic/KingticIO/impl/invalid"+suffix+".png");
+		img_failed = loadImage("com/kingtic/KingticIO/impl/failed"+suffix+".png");
 		
 		//读IO配置信息  
 		for(int i=0; i<addrs.length; ++i)
@@ -228,6 +254,15 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 		}
 	}
 	
+	
+	@Label(id = "IPTextLabel")
+	private LabelComponent IPTextLabel;
+	@Label(id = "renameLabel")
+	private LabelComponent renameLabel;
+	@Label(id = "inputLabel")
+	private LabelComponent inputLabel;
+	@Label(id = "outputLabel")
+	private LabelComponent outputLabel;
 	@Input(id = "txtIP")
 	private InputTextField IPText;
 	
@@ -252,36 +287,45 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 							boolean ret = xmlRpcDaemonInterface.ConnectTCP(IP);
 							if(ret)
 							{
-								boolean isVaild = CheckIndentity();
-								if(isVaild)
+								int isVaild = CheckIndentity();
+								if(isVaild == 0)
 								{
-									tcpStatusLabel.setText("连接成功");
+									tcpStatusLabel.setImage(img_success);
+									connectTCPButton.setText(KingticStrings.getString("Disconnect"));
 									isConnected = true;
+								}else if(isVaild == 1)
+								{
+									tcpStatusLabel.setImage(img_invalid);
 								}else
 								{
-									tcpStatusLabel.setText("非法KingticIO");
+									tcpStatusLabel.setImage(img_failed);
 								}
 								
 							}else
 							{
-								tcpStatusLabel.setText("连接失败");
+								tcpStatusLabel.setImage(img_failed);
 							}
 							
 						}else
 						{
-							tcpStatusLabel.setText("IP地址不能为空！");
+							//tcpStatusLabel.setText("IP地址不能为空！");
 						}
 					}else
 					{
 						xmlRpcDaemonInterface.Disconnect();
 						isConnected = false;
-						tcpStatusLabel.setText("连接已断开");
+						//tcpStatusLabel.setText("连接已断开");
+						tcpStatusLabel.setImage(img_disconnected);
+						connectTCPButton.setText(KingticStrings.getString("Connect"));
 					}
 					
 					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					//tcpStatusLabel.setText("连接失败");
+					tcpStatusLabel.setImage(img_failed);
+					connectTCPButton.setText(KingticStrings.getString("Connect"));
 				} 
 			}else
 			{
@@ -292,21 +336,22 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	}
 	
 	//
-	private boolean CheckIndentity()
+	private int CheckIndentity()
 	{
-		boolean ret = false;
+		//0:success 1:fail 2:not ready
+		int ret = 1;
 		try {
 			String indentity = xmlRpcDaemonInterface.GetIO(INDENTITY_ADDR+",1");
 			Integer value = new Integer(indentity);
 			if(value==INDENTITY_VALUE)
 			{
-				ret = true;
+				ret = 0;
 			}
 		} catch (XmlRpcException e) {
-			// TODO Auto-generated catch block
+			ret = 2;
 			e.printStackTrace();
 		} catch (UnknownResponseException e) {
-			// TODO Auto-generated catch block
+			ret = 2;
 			e.printStackTrace();
 		}
 		return ret;
@@ -679,6 +724,10 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	private InputButton tabIoSetting;
 	@Input(id = "tabIoMonitor")
 	private InputButton tabIoMonitor;
+	@Label(id="hline1")
+	private LabelComponent hline1;
+	@Label(id="hline2")
+	private LabelComponent hline2;
 	
 	@Div(id="divIoSetting")
 	private DivComponent divIOSetting;
@@ -690,8 +739,10 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 		if (event.getEventType() == InputEvent.EventType.ON_RELEASED) {
 			divIOSetting.setVisible(true);
 			divIOMonitor.setVisible(false);
-			tabIoSetting.setEnabled(false);
-			tabIoMonitor.setEnabled(true);
+//			tabIoSetting.setEnabled(false);
+//			tabIoMonitor.setEnabled(true);
+			tabIoSetting.setImage(img_tabSetting_sel);
+			tabIoMonitor.setImage(img_tabMonitor);
 		}
 	}
 	
@@ -700,23 +751,31 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 		if (event.getEventType() == InputEvent.EventType.ON_RELEASED) {
 			divIOMonitor.setVisible(true);
 			divIOSetting.setVisible(false);
-			tabIoSetting.setEnabled(true);
-			tabIoMonitor.setEnabled(false);
+//			tabIoSetting.setEnabled(true);
+//			tabIoMonitor.setEnabled(false);
+			tabIoSetting.setImage(img_tabSetting);
+			tabIoMonitor.setImage(img_tabMonitor_sel);
 		}
 	}
 
 	@Override
 	public void openView() {
-		tabIoSetting.setText("I/O设置");
-		tabIoMonitor.setText("I/O监控");
-		
+		lblLogo.setImage(img_logo);
+		IPTextLabel.setText(KingticStrings.getString("INodeC_IPLabel"));
+		renameLabel.setText(KingticStrings.getString("Rename"));
+		inputLabel.setText(KingticStrings.getString("INode_InputLabel"));
+		outputLabel.setText(KingticStrings.getString("INode_OutputLabel"));
 		divIOMonitor.setVisible(true);
 		divIOSetting.setVisible(false);
-		tabIoSetting.setEnabled(true);
-		tabIoMonitor.setEnabled(false);
+		tabIoSetting.setImage(img_tabSetting);
+		tabIoMonitor.setImage(img_tabMonitor_sel);
+		hline1.setImage(img_hline_tab);
+		hline2.setImage(img_hline);
 		
-		connectTCPButton.setText("连接");
-		cleanBotton.setText("清除");
+		IPText.setText(DEFAULT_IP);
+		
+		connectTCPButton.setText(KingticStrings.getString("Connect"));
+		cleanBotton.setText(KingticStrings.getString("Clean"));
 		//io btn
 		initIObtn();
 		initListBox();
@@ -820,7 +879,21 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 			
 		} catch (XmlRpcException e) {//connect broken
 			isConnected = false;
-			tcpStatusLabel.setText("连接已断开");
+			//daemonService.getDaemon().stop();
+			//daemonService.getDaemon().start();
+			try {
+				boolean ret = xmlRpcDaemonInterface.Disconnect();
+				//System.out.println("duankai:"+ret);
+			} catch (XmlRpcException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (UnknownResponseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			//tcpStatusLabel.setText("连接已断开");
+			tcpStatusLabel.setImage(img_disconnected);
+			connectTCPButton.setText(KingticStrings.getString("Connect"));
 			e.printStackTrace();
 		} catch (UnknownResponseException e) {
 			// TODO Auto-generated catch block
@@ -903,6 +976,10 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	public boolean isConnected()
 	{
 		return isConnected;
+	}
+	
+	public ResourceBundle getLocalResource(){
+		return this.KingticStrings;
 	}
 
 }
