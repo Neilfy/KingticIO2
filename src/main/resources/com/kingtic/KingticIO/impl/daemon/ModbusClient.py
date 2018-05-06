@@ -72,9 +72,13 @@ class ModbusClient(object):
             self.ser = serial.Serial(self.serialPort, self._baudrate, timeout=1, parity=self.ser.parity, stopbits=self.ser.stopbits, xonxoff=0, rtscts=0)
         #print (self.ser)
         if (self.tcpClientSocket is not None):  
-            self.tcpClientSocket.connect((self._ipAddress, self._port))
-        self.__connected = True
-  
+            try:
+                self.tcpClientSocket.connect((self._ipAddress, self._port))
+                self.__connected = True
+            except socket.error, e:
+                print e
+                self.__connected = False
+
     def close(self):
         """
         Closes Serial port, or TCP-Socket connection
@@ -85,7 +89,9 @@ class ModbusClient(object):
             self.tcpClientSocket.shutdown(socket.SHUT_RDWR)
             self.tcpClientSocket.close()
         self.__connected = False
-        
+
+    def isConnect(self):
+        return  self.__connected
             
     def ReadDiscreteInputs(self, startingAddress, quantity):
         """

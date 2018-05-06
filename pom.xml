@@ -7,7 +7,7 @@
 
 	<groupId>com.kingtic</groupId>
 	<artifactId>KingticIO</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>KingticIO</name>
 	<packaging>bundle</packaging>
 
@@ -19,11 +19,11 @@
 		<!--********************************************************************-->
 		<!--******************* BEGINNING OF URCAP META DATA *******************-->
 		<urcap.symbolicname>com.kingtic.KingticIO</urcap.symbolicname>
-		<urcap.vendor>URCaps R us Inc.</urcap.vendor>
-		<urcap.contactAddress>123 URCap Street</urcap.contactAddress>
+		<urcap.vendor>KING TECHNOLOGY(SHANGHAI)CO.,LTD</urcap.vendor>
+		<urcap.contactAddress>www.kingtic.cn</urcap.contactAddress>
 		<urcap.copyright>Copyright notice (C)</urcap.copyright>
-		<urcap.description>This is a description of the URCap</urcap.description>
-		<urcap.licenseType>License type</urcap.licenseType>
+		<urcap.description>URCap for Kingtic I/O</urcap.description>
+		<urcap.licenseType>proprietary</urcap.licenseType>
 		<!--********************** END OF URCAP META DATA **********************-->
 		<!--********************************************************************-->
 

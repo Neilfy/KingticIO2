@@ -48,39 +48,39 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	}
 	
 	//io名，地址，权限（0：启用，1：程序员操作，2：禁用）
-	private String[] addrs={"kingtic_in_0,0,0"
-			, "kingtic_in_1,1,0"
-			, "kingtic_in_2,2,0"
-			, "kingtic_in_3,3,0"
-			, "kingtic_in_4,4,0"
-			, "kingtic_in_5,5,0"
-			, "kingtic_in_6,6,0"
-			, "kingtic_in_7,7,0"
-			, "kingtic_in_8,8,0"
-			, "kingtic_in_9,9,0"
-			, "kingtic_in_10,10,0"
-			, "kingtic_in_11,11,0"
-			, "kingtic_in_12,12,0"
-			, "kingtic_in_13,13,0"
-			, "kingtic_in_14,14,0"
-			, "kingtic_in_15,15,0"
+	private String[] addrs={"k_di_0,0,0"
+			, "k_di_1,1,0"
+			, "k_di_2,2,0"
+			, "k_di_3,3,0"
+			, "k_di_4,4,0"
+			, "k_di_5,5,0"
+			, "k_di_6,6,0"
+			, "k_di_7,7,0"
+			, "k_di_8,8,0"
+			, "k_di_9,9,0"
+			, "k_di_10,10,0"
+			, "k_di_11,11,0"
+			, "k_di_12,12,0"
+			, "k_di_13,13,0"
+			, "k_di_14,14,0"
+			, "k_di_15,15,0"
 			
-			,"kingtic_out_0,0,0"
-			, "kingtic_out_1,1,0"
-			, "kingtic_out_2,2,0"
-			, "kingtic_out_3,3,0"
-			, "kingtic_out_4,4,0"
-			, "kingtic_out_5,5,0"
-			, "kingtic_out_6,6,0"
-			, "kingtic_out_7,7,0"
-			, "kingtic_out_8,8,0"
-			, "kingtic_out_9,9,0"
-			, "kingtic_out_10,10,0"
-			, "kingtic_out_11,11,0"
-			, "kingtic_out_12,12,0"
-			, "kingtic_out_13,13,0"
-			, "kingtic_out_14,14,0"
-			, "kingtic_out_15,15,0"
+			,"k_do_0,0,0"
+			, "k_do_1,1,0"
+			, "k_do_2,2,0"
+			, "k_do_3,3,0"
+			, "k_do_4,4,0"
+			, "k_do_5,5,0"
+			, "k_do_6,6,0"
+			, "k_do_7,7,0"
+			, "k_do_8,8,0"
+			, "k_do_9,9,0"
+			, "k_do_10,10,0"
+			, "k_do_11,11,0"
+			, "k_do_12,12,0"
+			, "k_do_13,13,0"
+			, "k_do_14,14,0"
+			, "k_do_15,15,0"
 	};
 	
 
@@ -95,6 +95,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	private final static String DEFAULT_IP = "192.168.1.37";
 	
 	private boolean isConnected = false;
+	private boolean isVaild = false;
 	private String IP = "";
 	private int DO = 0;
 	
@@ -102,6 +103,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	ArrayList<KingticIO> ioInfo = new ArrayList<KingticIO>();
 	
 	ArrayList<InputButton> ioBtn = new ArrayList<InputButton>();
+	ArrayList<LabelComponent> ioBtn_label = new ArrayList<LabelComponent>();
 	ArrayList<ListBoxItem> ioListBox = new ArrayList<ListBoxItem>();
 
 	private DataModel model;
@@ -125,7 +127,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 		//this.KingticStrings = ResourceBundle.getBundle("KingticIO", Locale.getDefault());
 		this.KingticStrings = KingticStrings;
 		//
-		img_logo = loadImage("com/kingtic/KingticIO/impl/logo.png");
+		img_logo = loadImage("com/kingtic/KingticIO/impl/logo1.png");
 		img_red = loadImage(IMAGE_RED);
 		img_gray = loadImage(IMAGE_GRAY);
 		String suffix = KingticStrings.getString("suffix");
@@ -214,22 +216,23 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	
 	public void initIObtn(){
 		ioBtn.clear();
-		ioBtn.add(ki0);
-		ioBtn.add(ki1);
-		ioBtn.add(ki2);
-		ioBtn.add(ki3);
-		ioBtn.add(ki4);
-		ioBtn.add(ki5);
-		ioBtn.add(ki6);
-		ioBtn.add(ki7);
-		ioBtn.add(ki8);
-		ioBtn.add(ki9);
-		ioBtn.add(ki10);
-		ioBtn.add(ki11);
-		ioBtn.add(ki12);
-		ioBtn.add(ki13);
-		ioBtn.add(ki14);
-		ioBtn.add(ki15);
+		ioBtn_label.clear();
+		ioBtn_label.add(ki0);
+		ioBtn_label.add(ki1);
+		ioBtn_label.add(ki2);
+		ioBtn_label.add(ki3);
+		ioBtn_label.add(ki4);
+		ioBtn_label.add(ki5);
+		ioBtn_label.add(ki6);
+		ioBtn_label.add(ki7);
+		ioBtn_label.add(ki8);
+		ioBtn_label.add(ki9);
+		ioBtn_label.add(ki10);
+		ioBtn_label.add(ki11);
+		ioBtn_label.add(ki12);
+		ioBtn_label.add(ki13);
+		ioBtn_label.add(ki14);
+		ioBtn_label.add(ki15);
 		
 		ioBtn.add(ko0);
 		ioBtn.add(ko1);
@@ -248,6 +251,11 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 		ioBtn.add(ko14);
 		ioBtn.add(ko15);
 		
+		for(int i=0; i<ioBtn_label.size(); ++i)
+		{
+			ioBtn_label.get(i).setImage(img_gray);
+		}
+		
 		for(int i=0; i<ioBtn.size(); ++i)
 		{
 			ioBtn.get(i).setImage(img_gray);
@@ -263,6 +271,10 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	private LabelComponent inputLabel;
 	@Label(id = "outputLabel")
 	private LabelComponent outputLabel;
+	@Label(id = "inputLabel_set")
+	private LabelComponent inputLabel_set;
+	@Label(id = "outputLabel_set")
+	private LabelComponent outputLabel_set;
 	@Input(id = "txtIP")
 	private InputTextField IPText;
 	
@@ -279,41 +291,38 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 			if(daemonService.getDaemon().getState() == DaemonContribution.State.RUNNING)
 			{
 				try {
-					if(!isConnected)
+					if(!isConnected && !isVaild)
 					{
 						IP = IPText.getText();
 						if(!IP.isEmpty())
 						{
-							boolean ret = xmlRpcDaemonInterface.ConnectTCP(IP);
-							if(ret)
-							{
-								int isVaild = CheckIndentity();
-								if(isVaild == 0)
-								{
-									tcpStatusLabel.setImage(img_success);
-									connectTCPButton.setText(KingticStrings.getString("Disconnect"));
-									isConnected = true;
-								}else if(isVaild == 1)
-								{
-									tcpStatusLabel.setImage(img_invalid);
-								}else
-								{
-									tcpStatusLabel.setImage(img_failed);
-								}
-								
-							}else
+							isConnected = xmlRpcDaemonInterface.ConnectTCP(IP);
+							if(!isConnected)
 							{
 								tcpStatusLabel.setImage(img_failed);
 							}
-							
+						}
+					}
+					if(isConnected && !isVaild)
+					{
+						int ret = CheckIndentity();
+						if(ret == 0)
+						{
+							tcpStatusLabel.setImage(img_success);
+							connectTCPButton.setText(KingticStrings.getString("Disconnect"));
+							isVaild = true;
+						}else if(ret == 1)
+						{
+							tcpStatusLabel.setImage(img_invalid);
 						}else
 						{
-							//tcpStatusLabel.setText("IP地址不能为空！");
+							tcpStatusLabel.setImage(img_failed);
 						}
-					}else
+					}else if(isConnected && isVaild)
 					{
 						xmlRpcDaemonInterface.Disconnect();
 						isConnected = false;
+						isVaild = false;
 						//tcpStatusLabel.setText("连接已断开");
 						tcpStatusLabel.setImage(img_disconnected);
 						connectTCPButton.setText(KingticStrings.getString("Connect"));
@@ -494,39 +503,334 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	@Label(id = "lbOut15")
 	private LabelComponent lbOut15;
 	
+	@Input(id = "radioIn0")
+	private void selectRadioIn0(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn0.isSelected())
+			{
+				setTextValue(0);
+			}
+		}
+	}
+	@Input(id = "radioIn1")
+	private void selectRadioIn1(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn1.isSelected())
+			{
+				setTextValue(1);
+			}
+		}
+	}
+	@Input(id = "radioIn2")
+	private void selectRadioIn2(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn2.isSelected())
+			{
+				setTextValue(2);
+			}
+		}
+	}
+	@Input(id = "radioIn3")
+	private void selectRadioIn3(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn3.isSelected())
+			{
+				setTextValue(3);
+			}
+		}
+	}
+	@Input(id = "radioIn4")
+	private void selectRadioIn4(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn4.isSelected())
+			{
+				setTextValue(4);
+			}
+		}
+	}
+	@Input(id = "radioIn5")
+	private void selectRadioIn5(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn5.isSelected())
+			{
+				setTextValue(5);
+			}
+		}
+	}
+	@Input(id = "radioIn6")
+	private void selectRadioIn6(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn6.isSelected())
+			{
+				setTextValue(6);
+			}
+		}
+	}
+	@Input(id = "radioIn7")
+	private void selectRadioIn7(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn7.isSelected())
+			{
+				setTextValue(7);
+			}
+		}
+	}
+	@Input(id = "radioIn8")
+	private void selectRadioIn8(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn8.isSelected())
+			{
+				setTextValue(8);
+			}
+		}
+	}
+	@Input(id = "radioIn9")
+	private void selectRadioIn9(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn9.isSelected())
+			{
+				setTextValue(9);
+			}
+		}
+	}
+	@Input(id = "radioIn10")
+	private void selectRadioIn10(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn10.isSelected())
+			{
+				setTextValue(10);
+			}
+		}
+	}
+	@Input(id = "radioIn11")
+	private void selectRadioIn11(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn11.isSelected())
+			{
+				setTextValue(11);
+			}
+		}
+	}
+	@Input(id = "radioIn12")
+	private void selectRadioIn12(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn12.isSelected())
+			{
+				setTextValue(12);
+			}
+		}
+	}
+	@Input(id = "radioIn13")
+	private void selectRadioIn13(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn13.isSelected())
+			{
+				setTextValue(13);
+			}
+		}
+	}
+	@Input(id = "radioIn14")
+	private void selectRadioIn14(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn14.isSelected())
+			{
+				setTextValue(14);
+			}
+		}
+	}
+	@Input(id = "radioIn15")
+	private void selectRadioIn15(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioIn15.isSelected())
+			{
+				setTextValue(15);
+			}
+		}
+	}
+	@Input(id = "radioOut0")
+	private void selectRadioOut0(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut0.isSelected())
+			{
+				setTextValue(16);
+			}
+		}
+	}
+	@Input(id = "radioOut1")
+	private void selectRadioOut1(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut1.isSelected())
+			{
+				setTextValue(17);
+			}
+		}
+	}
+	@Input(id = "radioOut2")
+	private void selectRadioOut2(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut2.isSelected())
+			{
+				setTextValue(18);
+			}
+		}
+	}
+	@Input(id = "radioOut3")
+	private void selectRadioOut3(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut3.isSelected())
+			{
+				setTextValue(19);
+			}
+		}
+	}
+	@Input(id = "radioOut4")
+	private void selectRadioOut4(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut4.isSelected())
+			{
+				setTextValue(20);
+			}
+		}
+	}
+	@Input(id = "radioOut5")
+	private void selectRadioOut5(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut5.isSelected())
+			{
+				setTextValue(21);
+			}
+		}
+	}
+	@Input(id = "radioOut6")
+	private void selectRadioOut6(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut6.isSelected())
+			{
+				setTextValue(22);
+			}
+		}
+	}
+	@Input(id = "radioOut7")
+	private void selectRadioOut7(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut7.isSelected())
+			{
+				setTextValue(23);
+			}
+		}
+	}
+	@Input(id = "radioOut8")
+	private void selectRadioOut8(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut8.isSelected())
+			{
+				setTextValue(24);
+			}
+		}
+	}
+	@Input(id = "radioOut9")
+	private void selectRadioOut9(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut9.isSelected())
+			{
+				setTextValue(25);
+			}
+		}
+	}
+	@Input(id = "radioOut10")
+	private void selectRadioOut10(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut10.isSelected())
+			{
+				setTextValue(26);
+			}
+		}
+	}
+	@Input(id = "radioOut11")
+	private void selectRadioOut11(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut11.isSelected())
+			{
+				setTextValue(27);
+			}
+		}
+	}
+	@Input(id = "radioOut12")
+	private void selectRadioOut12(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut12.isSelected())
+			{
+				setTextValue(28);
+			}
+		}
+	}
+	@Input(id = "radioOut13")
+	private void selectRadioOut13(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut13.isSelected())
+			{
+				setTextValue(29);
+			}
+		}
+	}
+	@Input(id = "radioOut14")
+	private void selectRadioOut14(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut14.isSelected())
+			{
+				setTextValue(30);
+			}
+		}
+	}
+	@Input(id = "radioOut15")
+	private void selectRadioOut15(InputEvent event) {
+		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
+			if(radioOut15.isSelected())
+			{
+				setTextValue(31);
+			}
+		}
+	}
 	
-	@Input(id = "ki0")
-	private InputButton ki0;
-	@Input(id = "ki1")
-	private InputButton ki1;
-	@Input(id = "ki2")
-	private InputButton ki2;
-	@Input(id = "ki3")
-	private InputButton ki3;
-	@Input(id = "ki4")
-	private InputButton ki4;
-	@Input(id = "ki5")
-	private InputButton ki5;
-	@Input(id = "ki6")
-	private InputButton ki6;
-	@Input(id = "ki7")
-	private InputButton ki7;
-	@Input(id = "ki8")
-	private InputButton ki8;
-	@Input(id = "ki9")
-	private InputButton ki9;
-	@Input(id = "ki10")
-	private InputButton ki10;
-	@Input(id = "ki11")
-	private InputButton ki11;
-	@Input(id = "ki12")
-	private InputButton ki12;
-	@Input(id = "ki13")
-	private InputButton ki13;
-	@Input(id = "ki14")
-	private InputButton ki14;
-	@Input(id = "ki15")
-	private InputButton ki15;
+	private void setTextValue(int idx)
+	{
+		KingticIO io = ioInfo.get(idx);
+		ioNameText.setText(io.displayName);
+	}
+	
+	
+	@Label(id = "ki0")
+	private LabelComponent ki0;
+	@Label(id = "ki1")
+	private LabelComponent ki1;
+	@Label(id = "ki2")
+	private LabelComponent ki2;
+	@Label(id = "ki3")
+	private LabelComponent ki3;
+	@Label(id = "ki4")
+	private LabelComponent ki4;
+	@Label(id = "ki5")
+	private LabelComponent ki5;
+	@Label(id = "ki6")
+	private LabelComponent ki6;
+	@Label(id = "ki7")
+	private LabelComponent ki7;
+	@Label(id = "ki8")
+	private LabelComponent ki8;
+	@Label(id = "ki9")
+	private LabelComponent ki9;
+	@Label(id = "ki10")
+	private LabelComponent ki10;
+	@Label(id = "ki11")
+	private LabelComponent ki11;
+	@Label(id = "ki12")
+	private LabelComponent ki12;
+	@Label(id = "ki13")
+	private LabelComponent ki13;
+	@Label(id = "ki14")
+	private LabelComponent ki14;
+	@Label(id = "ki15")
+	private LabelComponent ki15;
 	
 	@Input(id = "ko0")
 	private InputButton ko0;
@@ -728,6 +1032,10 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	private LabelComponent hline1;
 	@Label(id="hline2")
 	private LabelComponent hline2;
+	@Label(id="hline3")
+	private LabelComponent hline3;
+	@Label(id="hline4")
+	private LabelComponent hline4;
 	
 	@Div(id="divIoSetting")
 	private DivComponent divIOSetting;
@@ -765,12 +1073,16 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 		renameLabel.setText(KingticStrings.getString("Rename"));
 		inputLabel.setText(KingticStrings.getString("INode_InputLabel"));
 		outputLabel.setText(KingticStrings.getString("INode_OutputLabel"));
+		inputLabel_set.setText(KingticStrings.getString("INode_InputLabel"));
+		outputLabel_set.setText(KingticStrings.getString("INode_OutputLabel"));
 		divIOMonitor.setVisible(true);
 		divIOSetting.setVisible(false);
 		tabIoSetting.setImage(img_tabSetting);
 		tabIoMonitor.setImage(img_tabMonitor_sel);
 		hline1.setImage(img_hline_tab);
 		hline2.setImage(img_hline);
+		hline3.setImage(img_hline);
+		hline4.setImage(img_hline);
 		
 		IPText.setText(DEFAULT_IP);
 		
@@ -793,12 +1105,12 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 					}
 				});
 			}
-		}, 0, 300);
+		}, 0, 100);
 	}
 	
 	private void SetDOByIdx(int idx)
 	{
-		if(isConnected)
+		if(isVaild)
 		{
 			int ret = DO ^ (1 << idx);
 			 try {
@@ -834,7 +1146,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	
 	private void updateUI() {
 		try {
-			if(isConnected)
+			if(isVaild)
 			{
 				String ret_in = xmlRpcDaemonInterface.GetIO("0,1");
 				String ret_out = xmlRpcDaemonInterface.GetIO("1,1");
@@ -854,31 +1166,33 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 					{
 						if(status_in[i])
 						{
+							ioBtn_label.get(i).setImage(img_red);
+						}else
+						{
+							ioBtn_label.get(i).setImage(img_gray);
+						}
+						
+						if(status_out[i])
+						{
 							ioBtn.get(i).setImage(img_red);
 						}else
 						{
 							ioBtn.get(i).setImage(img_gray);
 						}
-						
-						if(status_out[i])
-						{
-							ioBtn.get(i+16).setImage(img_red);
-						}else
-						{
-							ioBtn.get(i+16).setImage(img_gray);
-						}
 					}
 				}
 			}else
 			{
-				for(int i=0; i<32; i++)
+				for(int i=0; i<16; i++)
 				{
+					ioBtn_label.get(i).setImage(img_gray);
 					ioBtn.get(i).setImage(img_gray);
 				}
 			}
 			
 		} catch (XmlRpcException e) {//connect broken
 			isConnected = false;
+			isVaild = false;
 			//daemonService.getDaemon().stop();
 			//daemonService.getDaemon().start();
 			try {
@@ -975,7 +1289,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	
 	public boolean isConnected()
 	{
-		return isConnected;
+		return isVaild;
 	}
 	
 	public ResourceBundle getLocalResource(){

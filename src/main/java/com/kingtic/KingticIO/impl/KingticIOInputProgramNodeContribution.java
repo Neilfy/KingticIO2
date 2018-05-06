@@ -50,7 +50,8 @@ public class KingticIOInputProgramNodeContribution implements ProgramNodeContrib
 		this.api = api;
 		this.model = model;
 		this.KingticStrings = KingticStrings;
-		this.DefaultTitle = KingticStrings.getString("PNodeC_In_Title");
+		//this.DefaultTitle = KingticStrings.getString("PNodeC_In_Title");
+		this.DefaultTitle = model.get("DefaultTitle", KingticStrings.getString("PNodeC_Out_Title"));
 		this.model.set("DefaultTitle", DefaultTitle);
 		Wait = KingticStrings.getString("Wait");
 		On = KingticStrings.getString("ON");
@@ -140,7 +141,7 @@ public class KingticIOInputProgramNodeContribution implements ProgramNodeContrib
 
 	@Override
 	public boolean isDefined() {
-		return getInstallation().isConnected() && InputSelect.getSelectedIndex()!=0;
+		return InputSelect.getSelectedIndex()!=0;
 	}
 	
 	@Override

@@ -15,7 +15,7 @@ def connect_TCP(ip):
 	global connected, modbusClient
 	modbusClient = ModbusClient(ip, 502)
 	modbusClient.Connect()
-	connected = True
+	connected = modbusClient.isConnect()
 	return connected
 
 def disconnect():
