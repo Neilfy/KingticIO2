@@ -111,6 +111,8 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	private final MyDaemonDaemonService daemonService;
 	private XmlRpcMyDaemonInterface xmlRpcDaemonInterface;
 	private Timer uiTimer;
+	private Timer autoConnectTimer;
+	private TimerTask task;
 	
 	@Label(id="logo")
 	private LabelComponent lblLogo;
@@ -167,6 +169,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 		}
 
 		xmlRpcDaemonInterface = new XmlRpcMyDaemonInterface("127.0.0.1", 40404);
+		
 	}
 	
 	public void initListBox(){
@@ -288,60 +291,109 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	@Input(id = "btnConnectTCP")
 	public void onConnectClick(InputEvent event) {
 		if (event.getEventType() == InputEvent.EventType.ON_CHANGE) {
-			if(daemonService.getDaemon().getState() == DaemonContribution.State.RUNNING)
+			if(isConnected && isVaild)
 			{
 				try {
-					if(!isConnected && !isVaild)
-					{
-						IP = IPText.getText();
-						if(!IP.isEmpty())
-						{
-							isConnected = xmlRpcDaemonInterface.ConnectTCP(IP);
-							if(!isConnected)
-							{
-								tcpStatusLabel.setImage(img_failed);
-							}
-						}
-					}
-					if(isConnected && !isVaild)
-					{
-						int ret = CheckIndentity();
-						if(ret == 0)
-						{
-							tcpStatusLabel.setImage(img_success);
-							connectTCPButton.setText(KingticStrings.getString("Disconnect"));
-							isVaild = true;
-						}else if(ret == 1)
-						{
-							tcpStatusLabel.setImage(img_invalid);
-						}else
-						{
-							tcpStatusLabel.setImage(img_failed);
-						}
-					}else if(isConnected && isVaild)
-					{
-						xmlRpcDaemonInterface.Disconnect();
-						isConnected = false;
-						isVaild = false;
-						//tcpStatusLabel.setText("连接已断开");
-						tcpStatusLabel.setImage(img_disconnected);
-						connectTCPButton.setText(KingticStrings.getString("Connect"));
-					}
-					
-					
-				} catch (Exception e) {
+					xmlRpcDaemonInterface.Disconnect();
+					isConnected = false;
+					isVaild = false;
+					//tcpStatusLabel.setText("连接已断开");
+					tcpStatusLabel.setImage(img_disconnected);
+					connectTCPButton.setText(KingticStrings.getString("Connect"));
+				} catch (XmlRpcException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					//tcpStatusLabel.setText("连接失败");
-					tcpStatusLabel.setImage(img_failed);
-					connectTCPButton.setText(KingticStrings.getString("Connect"));
-				} 
+				} catch (UnknownResponseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}else
 			{
-				tcpStatusLabel.setText("daemon或Rpc启动失败！");
+				connect();
 			}
 			
 		}
+	}
+	
+	private void connect()
+	{
+		if(daemonService.getDaemon().getState() == DaemonContribution.State.RUNNING)
+		{
+			try {
+				if(!isConnected && !isVaild)
+				{
+					IP = IPText.getText();
+					if(!IP.isEmpty())
+					{
+						isConnected = xmlRpcDaemonInterface.ConnectTCP(IP);
+						if(!isConnected)
+						{
+							tcpStatusLabel.setImage(img_failed);
+						}
+					}
+				}
+				if(isConnected && !isVaild)
+				{
+					int ret = CheckIndentity();
+					if(ret == 0)
+					{
+						tcpStatusLabel.setImage(img_success);
+						connectTCPButton.setText(KingticStrings.getString("Disconnect"));
+						isVaild = true;
+						stopConnectTimer();
+					}else if(ret == 1)
+					{
+						tcpStatusLabel.setImage(img_invalid);
+					}else
+					{
+						isConnected = false;
+						tcpStatusLabel.setImage(img_failed);
+					}
+				}
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				//tcpStatusLabel.setText("连接失败");
+				tcpStatusLabel.setImage(img_failed);
+				connectTCPButton.setText(KingticStrings.getString("Connect"));
+			} 
+		}else
+		{
+			tcpStatusLabel.setText("daemon或Rpc启动失败！");
+		}
+	}
+	
+	private void startConnectTimer()
+	{
+		if (autoConnectTimer == null) {    
+			autoConnectTimer = new Timer();    
+        }    
+    
+        if (task == null) {    
+        	task = new TimerTask() {    
+                @Override    
+                public void run() {    
+                	connect();
+                }    
+            };    
+        }    
+    
+        if(autoConnectTimer != null && task != null )    
+        	autoConnectTimer.schedule(task, 0, 2000);  
+	}
+	
+	private void stopConnectTimer()
+	{
+		if (autoConnectTimer != null) {    
+			autoConnectTimer.cancel();    
+			autoConnectTimer = null;    
+        }    
+        if (task != null) {    
+        	task.cancel();    
+        	task = null;    
+        }       
 	}
 	
 	//
@@ -1188,9 +1240,12 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 					ioBtn_label.get(i).setImage(img_gray);
 					ioBtn.get(i).setImage(img_gray);
 				}
+				
 			}
 			
 		} catch (XmlRpcException e) {//connect broken
+			e.printStackTrace();
+			
 			isConnected = false;
 			isVaild = false;
 			//daemonService.getDaemon().stop();
@@ -1208,7 +1263,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 			//tcpStatusLabel.setText("连接已断开");
 			tcpStatusLabel.setImage(img_disconnected);
 			connectTCPButton.setText(KingticStrings.getString("Connect"));
-			e.printStackTrace();
+			startConnectTimer();
 		} catch (UnknownResponseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

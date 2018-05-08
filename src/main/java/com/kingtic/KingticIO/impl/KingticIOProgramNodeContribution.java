@@ -173,12 +173,12 @@ public class KingticIOProgramNodeContribution implements ProgramNodeContribution
 
 	@Override
 	public boolean isDefined() {
-		return OutputSelect.getSelectedIndex()!=0;
+		return model.get(SELECTED_IO, 0)!=0;
 	}
 	
 	@Override
 	public void generateScript(ScriptWriter writer) {
-		if(getInstallation().isConnected())
+		//if(getInstallation().isConnected())
 		{
 			int idx = model.get(SELECTED_IO, 0);
 			int value = model.get(RADIO_ON, true) ? 1 : 0;
@@ -202,6 +202,9 @@ public class KingticIOProgramNodeContribution implements ProgramNodeContribution
 					+OutputSelect.getSelectedItem()
 					+(radioOn.isSelected()?("="+On):"="+Off);
 			this.model.set("DefaultTitle", SetTitle);
+		}else
+		{
+			this.model.set("DefaultTitle", KingticStrings.getString("PNodeC_Out_Title"));
 		}
 	}
 	
