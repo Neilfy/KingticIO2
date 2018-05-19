@@ -25,6 +25,13 @@ def disconnect():
 		connected = False
 	return True
 
+def isConnected():
+	global  modbusClient
+        ret = False;
+	if(modbusClient):
+		ret = modbusClient.isConnected()
+	return ret
+
 def send_Command(value):
 	global connected, modbusClient
 	ret = False
@@ -92,6 +99,7 @@ sys.stderr.write("MyDaemon daemon started")
 server = SimpleXMLRPCServer(("127.0.0.1", 40404))
 server.register_function(connect_TCP, "connect_TCP")
 server.register_function(disconnect, "disconnect")
+server.register_function(isConnected, "isConnected")
 server.register_function(send_Command, "send_Command")
 server.register_function(get_IO, "get_IO")
 server.register_function(ReadDiscreteInputs, "ReadDiscreteInputs")

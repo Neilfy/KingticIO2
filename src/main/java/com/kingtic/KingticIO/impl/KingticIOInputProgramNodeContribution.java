@@ -153,8 +153,12 @@ public class KingticIOInputProgramNodeContribution implements ProgramNodeContrib
 			KingticIO io = getInstallation().getIOInput(idx-1);
 			String cmd = io.addr + ",1";
 			
+			writer.appendLine("if ("+getInstallation().getXMLRPCVariable()+".isConnected() ):");
 			writer.appendLine("while ("+getInstallation().getXMLRPCVariable()+".ReadDiscreteInputs(\""+cmd+"\") != \""+value+"\"):");
 			writer.appendLine("  sync()");
+			writer.appendLine("end");
+			writer.appendLine("else:");
+			writer.appendLine("popup(\""+KingticStrings.getString("ErrorSocket")+"\", \"Message\", False, True, blocking=True)");
 			writer.appendLine("end");
 		}
 		

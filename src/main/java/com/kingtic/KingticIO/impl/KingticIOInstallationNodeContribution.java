@@ -96,8 +96,10 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	
 	private boolean isConnected = false;
 	private boolean isVaild = false;
-	private String IP = "";
+	private String IP = DEFAULT_IP;
 	private int DO = 0;
+	
+	private int showImg = 0; //0 null, 1 sucess, 2 fail, 3 invail, 4 disconnect
 	
 	//ArrayList<Object> ioItems = new ArrayList<Object>();
 	ArrayList<KingticIO> ioInfo = new ArrayList<KingticIO>();
@@ -169,7 +171,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 		}
 
 		xmlRpcDaemonInterface = new XmlRpcMyDaemonInterface("127.0.0.1", 40404);
-		
+		startConnectTimer();
 	}
 	
 	public void initListBox(){
@@ -298,6 +300,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 					isConnected = false;
 					isVaild = false;
 					//tcpStatusLabel.setText("连接已断开");
+					showImg = 4;
 					tcpStatusLabel.setImage(img_disconnected);
 					connectTCPButton.setText(KingticStrings.getString("Connect"));
 				} catch (XmlRpcException e) {
@@ -310,7 +313,13 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 				
 			}else
 			{
-				connect();
+				IP = IPText.getText();
+				if(!IP.isEmpty())
+				{
+					connect();
+					updateConStatus();
+				}
+				
 			}
 			
 		}
@@ -318,19 +327,18 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	
 	private void connect()
 	{
+		System.out.println("try connectting... ");
 		if(daemonService.getDaemon().getState() == DaemonContribution.State.RUNNING)
 		{
 			try {
 				if(!isConnected && !isVaild)
 				{
-					IP = IPText.getText();
-					if(!IP.isEmpty())
+					
+					isConnected = xmlRpcDaemonInterface.ConnectTCP(IP);
+					if(!isConnected)
 					{
-						isConnected = xmlRpcDaemonInterface.ConnectTCP(IP);
-						if(!isConnected)
-						{
-							tcpStatusLabel.setImage(img_failed);
-						}
+						//tcpStatusLabel.setImage(img_failed);
+						showImg = 2;
 					}
 				}
 				if(isConnected && !isVaild)
@@ -338,31 +346,70 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 					int ret = CheckIndentity();
 					if(ret == 0)
 					{
-						tcpStatusLabel.setImage(img_success);
-						connectTCPButton.setText(KingticStrings.getString("Disconnect"));
+						//tcpStatusLabel.setImage(img_success);
+						//connectTCPButton.setText(KingticStrings.getString("Disconnect"));
+						showImg = 1;
 						isVaild = true;
 						stopConnectTimer();
 					}else if(ret == 1)
 					{
-						tcpStatusLabel.setImage(img_invalid);
+						//tcpStatusLabel.setImage(img_invalid);
+						showImg = 3;
 					}else
 					{
 						isConnected = false;
-						tcpStatusLabel.setImage(img_failed);
+						//tcpStatusLabel.setImage(img_failed);
+						showImg = 2;
 					}
 				}
 				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				//tcpStatusLabel.setText("连接失败");
-				tcpStatusLabel.setImage(img_failed);
-				connectTCPButton.setText(KingticStrings.getString("Connect"));
+				//tcpStatusLabel.setImage(img_failed);
+				//connectTCPButton.setText(KingticStrings.getString("Connect"));
+				showImg = 2;
 			} 
 		}else
 		{
-			tcpStatusLabel.setText("daemon或Rpc启动失败！");
+			//tcpStatusLabel.setText("daemon或Rpc启动失败！");
+			System.out.println("daemon或Rpc启动失败！");
 		}
+		if(tcpStatusLabel!=null)
+		{
+			updateConStatus();
+		}
+	}
+	
+	private void updateConStatus()
+	{
+		switch(showImg)
+		{
+		case 0:
+			tcpStatusLabel.setImage(null);
+			break;
+		case 1:
+			tcpStatusLabel.setImage(img_success);
+			break;
+		case 2:
+			tcpStatusLabel.setImage(img_failed);
+			break;
+		case 3:
+			tcpStatusLabel.setImage(img_invalid);
+			break;
+		case 4:
+			tcpStatusLabel.setImage(img_disconnected);
+			break;
+		}
+		
+		if(showImg==1)
+		{
+			connectTCPButton.setText(KingticStrings.getString("Disconnect"));
+		}else
+		{
+			connectTCPButton.setText(KingticStrings.getString("Connect"));
+		}
+			
 	}
 	
 	private void startConnectTimer()
@@ -1071,6 +1118,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 				model.remove(io.defaultName);
 				
 				item.label.setText(io.displayName);
+				ioNameText.setText("");
 			}
 		}
 	}
@@ -1143,6 +1191,8 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 		//io btn
 		initIObtn();
 		initListBox();
+		
+		updateConStatus();
 		
 		//applyDesiredDaemonStatus();
 		//UI updates from non-GUI threads must use EventQueue.invokeLater (or SwingUtilities.invokeLater)
@@ -1261,6 +1311,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 				e1.printStackTrace();
 			}
 			//tcpStatusLabel.setText("连接已断开");
+			showImg = 4;
 			tcpStatusLabel.setImage(img_disconnected);
 			connectTCPButton.setText(KingticStrings.getString("Connect"));
 			startConnectTimer();

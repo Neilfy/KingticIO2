@@ -41,6 +41,12 @@ public class XmlRpcMyDaemonInterface {
 		return processBoolean(result);
 	}
 	
+	public boolean IsConnected() throws XmlRpcException, UnknownResponseException {
+		ArrayList<String> args = new ArrayList<String>();
+		Object result = client.execute("isConnected", args);
+		return processBoolean(result);
+	}
+	
 	public Boolean SendCommand(String value) throws XmlRpcException, UnknownResponseException {
 		ArrayList<String> args = new ArrayList<String>();
 		args.add(value);
