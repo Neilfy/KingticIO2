@@ -115,6 +115,8 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 	private Timer uiTimer;
 	private Timer autoConnectTimer;
 	private TimerTask task;
+	private Timer heartbeatTimer;
+	private TimerTask task_heartbeat;
 	
 	@Label(id="logo")
 	private LabelComponent lblLogo;
@@ -351,6 +353,7 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
 						showImg = 1;
 						isVaild = true;
 						stopConnectTimer();
+						startHeartBeatTimer();
 					}else if(ret == 1)
 					{
 						//tcpStatusLabel.setImage(img_invalid);
@@ -441,6 +444,62 @@ public class KingticIOInstallationNodeContribution implements InstallationNodeCo
         	task.cancel();    
         	task = null;    
         }       
+	}
+	
+	private void startHeartBeatTimer()
+	{
+		if (heartbeatTimer == null) {    
+			heartbeatTimer = new Timer();    
+        }    
+    
+        if (task_heartbeat == null) {    
+        	task_heartbeat = new TimerTask() {    
+                @Override    
+                public void run() {    
+                	HeartBeat();
+                }    
+            };    
+        }    
+    
+        if(heartbeatTimer != null && task_heartbeat != null )    
+        	heartbeatTimer.schedule(task_heartbeat, 0, 5000);  
+	}
+	
+	private void stopHeartBeatTimer()
+	{
+		if (heartbeatTimer != null) {    
+			heartbeatTimer.cancel();    
+			heartbeatTimer = null;    
+        }    
+        if (task_heartbeat != null) {    
+        	task_heartbeat.cancel();    
+        	task_heartbeat = null;    
+        }       
+	}
+	
+	//
+	private void HeartBeat()
+	{
+		try {
+			String ret = xmlRpcDaemonInterface.GetIO(INDENTITY_ADDR+",1");
+		} catch (XmlRpcException e) {
+			isConnected = false;
+			isVaild = false;
+			try {
+				boolean ret = xmlRpcDaemonInterface.Disconnect();
+			} catch (XmlRpcException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (UnknownResponseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			stopHeartBeatTimer();
+			startConnectTimer();
+			e.printStackTrace();
+		} catch (UnknownResponseException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	//

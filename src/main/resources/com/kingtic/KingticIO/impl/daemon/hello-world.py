@@ -88,7 +88,7 @@ def WriteSingleCoil(value):
 #disconnect()
 #while True:
 #	print get_IO("2000,1")
-#	time.sleep( 3)
+#	time.sleep( 15)
 #print send_Command("2000,2000")
 #print ReadDiscreteInputs("1,1")
 #print ReadCoils("0,16")
